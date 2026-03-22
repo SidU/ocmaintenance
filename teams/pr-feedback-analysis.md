@@ -100,18 +100,19 @@
 #### C12. Preserve auth-allowlist checks on redirected media fetches (P2)
 
 - **What:** The download path unconditionally sets Bearer token and calls `safeFetch` without `authorizationAllowHosts` on redirect hops. This means `Authorization` headers could be forwarded to non-Graph hosts on redirect.
-- **Risk:** **Medium-High (security)** — could leak Graph app tokens to third-party hosts if a download URL redirects. This is the most security-relevant open item.
-- **Action:** Investigate before merge — verify redirect handling preserves auth-allowlist checks. Related to the `smba.trafficmanager.net` auth allowlist area we already fixed.
+- **Risk:** Initially assessed as Medium-High (security).
+- **Investigation result:** **NOT AN ISSUE.** Both code paths are protected:
+  - Graph API calls use `fetchWithSsrFGuard` (core `src/infra/net/fetch-guard.ts`) which calls `retainSafeHeadersForCrossOriginRedirect` on cross-origin redirects — this strips `Authorization` (only keeps safe headers like accept, user-agent).
+  - Direct attachment downloads use `safeFetchWithPolicy` which checks `authorizationAllowHosts` on every redirect hop (lines 420-426 in `shared.ts`) and strips auth for non-allowlisted hosts.
+- **Action:** None needed. Replied on PR with code evidence.
 
 ---
 
 ## Priority Matrix
 
-### Before Merge (investigate)
+### Before Merge
 
-| Item | Source | Why |
-|------|--------|-----|
-| C12 — Auth-allowlist on redirects | Codex | Security: potential token leak on redirects |
+Nothing — all blocking items resolved. C12 investigated and confirmed not an issue.
 
 ### Fast Follow-Up PR
 
