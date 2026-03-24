@@ -122,7 +122,8 @@ Nothing — all blocking items resolved. C12 investigated and confirmed not an i
 | B2 — Token cast helper | Brad | Small |
 | B3 — Gate conversationUpdate | Brad | Small |
 | C8 — Stream size-limit fallback | Codex | Small (verify + test) |
-| C11 — Cooldown after success | Codex | Small |
+| Feedback transcript path — writes to orphan file, not active session transcript | Codex (later round) | Medium — needs session metadata lookup |
+| Persisted timezone — drops back to undefined when clientInfo missing on subsequent messages | Codex (later round) | Small — read from conversation store fallback |
 
 ### Later Follow-Up
 
@@ -143,3 +144,10 @@ Nothing — all blocking items resolved. C12 investigated and confirmed not an i
 | C5 — Streamed text + media dupe | `a2177b4` |
 | C6 — Feedback conversation ID | `dca792462e` |
 | C7 — Stream fallback final send | `41b2d7d3f2` |
+| C11 — Cooldown after success | `ec2579c` (cooldown recorded after successful dispatch) |
+| C12 — Auth-allowlist on redirects | Not an issue (investigated — core `fetchWithSsrFGuard` strips auth on cross-origin redirects) |
+| Reflection dispatcher lifecycle leak (P1) | `42c075d9` — use `dispatchReplyFromConfigWithSettledDispatcher` |
+| Pre-parse auth gate (P2) | `5831b421` — reject requests without Bearer token before body parsing |
+| Colon-safe filenames (P2) | `5831b421` — strip `:` from session-derived filenames for Windows compat |
+| Cooldown cache eviction (P2) | `5831b421` — prune expired entries when Map exceeds 500 entries |
+| Copy-pasted image auth (bug fix) | `94a47a3f` — add `smba.trafficmanager.net` to auth allowlist |
