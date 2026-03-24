@@ -1,0 +1,6 @@
+dmPolicy:
+pairing
+allowFrom:
+[
+  "11f44b5b-bf76-4dd8-9976-f39d96594d92",
+  "8f0846cb-dd62-4dc6-8890-76079ee36563",

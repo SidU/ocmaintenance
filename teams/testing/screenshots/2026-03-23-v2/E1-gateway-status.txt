@@ -1,0 +1,5 @@
+● openclaw-gateway.service - OpenClaw Gateway
+     Loaded: loaded (/etc/systemd/system/openclaw-gateway.service; enabled; preset: enabled)
+     Active: active (running) since Tue 2026-03-24 04:29:58 UTC; 19min ago
+   Main PID: 50416 (openclaw-gatewa)
+      Tasks: 11 (limit: 9450)

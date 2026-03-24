@@ -1,0 +1,3 @@
+LISTEN 0      511        127.0.0.1:3978      0.0.0.0:*    users:(("openclaw-gatewa",pid=50416,fd=22))
+LISTEN 0      511                *:3979            *:*    users:(("openclaw-gatewa",pid=50416,fd=29))
+LISTEN 0      511            [::1]:3978         [::]:*    users:(("openclaw-gatewa",pid=50416,fd=23))
