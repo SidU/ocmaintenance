@@ -245,17 +245,53 @@ Run these 5 tests for a quick validation:
 
 ---
 
-## Test Report Template
+## Test Reporting Guidelines
+
+### Screenshots
+
+Every test report MUST include a screenshot of the observed behavior for each test. Screenshots should be:
+
+- Taken via Playwright `browser_take_screenshot` during the test run
+- Named with the test ID: `{test-id}-{short-description}.png` (e.g. `A1-basic-reply.png`, `B1-channel-thread.png`)
+- Saved to `teams/testing/screenshots/{report-date}/` (e.g. `teams/testing/screenshots/2026-03-23/`)
+- Referenced in the report with relative paths: `![description](../screenshots/2026-03-23/A1-basic-reply.png)`
+
+For tests verified via server logs or CLI (D1-D4, E1-E5), include the command output instead of a screenshot.
+
+### Report File
+
+- Save to `teams/testing/reports/{date}_{branch-short}_{commit-short}.md`
+- Each test must have: Steps, Expected, Actual, and Screenshot/Evidence
+- Use the template below as a starting point
+
+### Template
 
 ```
-Date: YYYY-MM-DD
-Branch: [branch name]
-Tester: [name]
-Environment: [VM/dev-tunnel URL]
+# OpenClaw (INT) Teams Bot — Test Report
 
-| Test | Result | Observations |
-|------|--------|-------------|
-| A1   |        |             |
-| A2   |        |             |
-| ...  |        |             |
+**Date:** YYYY-MM-DD
+**Branch:** `branch-name`
+**Commit:** `short-sha` (commit message)
+**VM:** endpoint URL
+**Bot:** bot name — App ID `app-id`
+**Tested via:** Teams Web + Playwright browser automation
+
+## Results Summary
+
+| | Count |
+|---|---|
+| **Passed** | X/30 |
+| **Not Tested** | Y/30 |
+| **Failed** | Z/30 |
+
+## A. 1:1 Personal Chat
+
+### A1. Basic Reply — RESULT
+
+- **Steps:** [what you did]
+- **Expected:** [what should happen]
+- **Actual:** [what happened]
+- **Screenshot:** ![A1 basic reply](../screenshots/YYYY-MM-DD/A1-basic-reply.png)
+
+[repeat for each test...]
 ```
