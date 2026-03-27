@@ -27,18 +27,21 @@
 - **Steps:** Sent "Final regression A1. Say PASS if you hear me."
 - **Expected:** Bot replies with text
 - **Actual:** Bot replied "PASS" with AI generated label and Like/Dislike buttons
+- **Screenshot:** ![A1 basic reply](../screenshots/2026-03-27/A1-basic-reply-pass.png)
 
 ### A4. Streaming (Progressive Updates) — PASS
 
 - **Steps:** Sent "Final regression A4+A5. Write a detailed 2-paragraph explanation of how TCP works (at least 200 words), then fetch https://httpbin.org/get to verify connectivity, then write 1 paragraph summarizing what the fetch returned."
 - **Expected:** Text appears progressively with typing indicator and Stop button
 - **Actual:** TCP explanation streamed progressively with Stop button and "OpenClaw (INT) is typing" visible
+- **Screenshot:** ![A4 streaming](../screenshots/2026-03-27/A5-post-tool-segment-delivered.png)
 
 ### A5. Streaming with Tool Use (Multi-Segment) — PASS
 
 - **Steps:** Same prompt as A4 — triggers web_fetch tool between text segments
 - **Expected:** Both pre-tool and post-tool text delivered. No content silently lost.
 - **Actual:** TCP explanation delivered via stream, then "The fetch operation to `https://httpbin.org/get` was successful, returning a status of 200..." delivered via fallback as a separate message with AI label and feedback buttons.
+- **Screenshot:** ![A5 fetch result fallback](../screenshots/2026-03-27/A5-fetch-result-fallback.png)
 
 ---
 
