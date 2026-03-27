@@ -30,6 +30,8 @@ Hard-won insights from bugs, reviews, and production incidents. Read this before
 
 - **Test with tools.** For any change to the reply pipeline (streaming, delivery, formatting), always test with a tool-using agent prompt, not just a simple chatbot prompt. Tool use is the most common source of multi-segment responses.
 
+- **Test all call orderings, not just one sequence.** The stream controller has multiple entry points (`onPartialReply`, `preparePayload`, `finalize`) that mutate shared state. When fixing state bugs, enumerate the possible call sequences — e.g., `preparePayload → preparePayload` is different from `preparePayload → onPartialReply → preparePayload`. The first fix for #56040 handled one sequence but missed the other, caught in code review.
+
 ---
 
 ## General Teams Streaming Protocol Gotchas
