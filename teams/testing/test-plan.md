@@ -38,55 +38,61 @@ For each test, record: PASS / FAIL / BLOCKED, with observations.
 - **Expected:** Text appears progressively (word by word / chunk by chunk), not all at once. Typing dots (●●●) visible during generation. A "Stop" button may appear.
 - **Verify:** Take a mid-stream screenshot showing partial text
 
-### A5. Long Response Completes
+### A5. Streaming with Tool Use (Multi-Segment)
+- **Steps:** Send a message that triggers tool use mid-response (e.g., "Read my last file and summarize it" or any prompt that causes the agent to call exec/read tools between text segments)
+- **Expected:** Both the text before and after the tool call are delivered. No content is silently lost.
+- **Verify:** The final response contains text from both before and after the tool invocation. No 403 errors in server logs.
+- **Server check:** `grep -E "stream error|ContentStreamNotAllowed" /tmp/openclaw/openclaw-$(date +%Y-%m-%d).log` should return nothing
+
+### A6. Long Response Completes
 - **Steps:** Same as A4 — wait for response to finish
 - **Expected:** Full response renders with formatting (bold, paragraphs). No truncation or error.
 - **Verify:** Response has multiple paragraphs with proper markdown rendering
 
-### A6. Thumbs Up (Like) Feedback
+### A7. Thumbs Up (Like) Feedback
 - **Steps:** Click the thumbs up icon on any bot response
 - **Expected:** Feedback dialog opens with "What did you like?" prompt
 - **Verify:** Dialog title says "Submit feedback to [bot name]"
 
-### A7. Thumbs Down (Dislike) Feedback
+### A8. Thumbs Down (Dislike) Feedback
 - **Steps:** Click the thumbs down icon on any bot response
 - **Expected:** Feedback dialog opens with "What went wrong?" prompt
 - **Verify:** Dialog title matches; different question than thumbs up
 
-### A8. Feedback Submission
+### A9. Feedback Submission
 - **Steps:** Type feedback text in the dialog and click Submit
 - **Expected:** "Feedback submitted." toast notification appears. Like/Dislike button shows active state.
 - **Server check:** `grep "received feedback" /tmp/openclaw/openclaw-$(date +%Y-%m-%d).log` shows entry
 
-### A9. Feedback Reflection (Dislike)
+### A10. Feedback Reflection (Dislike)
 - **Steps:** Submit negative (dislike) feedback
 - **Server check:** Look for reflection-related log entries. The bot may send a follow-up message based on the reflection.
 - **Note:** Reflection has a 5-minute cooldown per session
 
-### A10. Welcome Card on Install
+### A11. Welcome Card on Install
 - **Steps:** Remove and re-add the bot, or check the first message in the conversation
 - **Expected:** Adaptive Card with bot greeting and prompt starters (default: "What can you do?", "Summarize my last meeting", "Help me draft an email")
 - **Verify:** Card renders with clickable buttons
 
-### A11. Prompt Starters (Welcome Card Buttons)
+### A12. Prompt Starters (Welcome Card Buttons)
 - **Steps:** Click one of the prompt starter buttons on the welcome card
 - **Expected:** The button text is sent as a message to the bot, which replies normally
 
-### A12. View Prompts Button
+### A13. View Prompts Button
 - **Steps:** Click "View prompts" at the bottom of the chat
 - **Expected:** Popup shows "Prompt Suggestions from [bot name]" with available commands (e.g. "Help")
 
-### A13. Typing Indicator in 1:1
+### A14. Typing Indicator in 1:1
 - **Steps:** Send a message and watch for typing indicator before response
 - **Expected:** Typing dots appear while bot is processing/streaming
 
-### A14. Image Attachment (Requires Graph Permissions)
+### A15. Image Attachment (Requires Graph Permissions)
 - **Steps:** Paste or attach an image in the chat with a question about it
 - **Expected (with Graph perms):** Bot receives and describes the image
 - **Expected (without Graph perms):** Bot replies but says it can't see the image. Server logs show `"inline images detected but none downloaded"` and `"graph media fetch empty"`
 - **Server check:** `grep "inline images\|graph media" /tmp/openclaw/openclaw-$(date +%Y-%m-%d).log`
 
-### A15. Rapid Messages (Duplicate Prevention)
+### A16. Rapid Messages (Duplicate Prevention)
 - **Steps:** Send 2 messages within 1 second
 - **Expected:** Bot replies to BOTH messages separately, no duplicates, no crashes
 - **Verify:** Each message gets exactly one response
@@ -280,9 +286,9 @@ For tests verified via server logs or CLI (D1-D4, E1-E5), include the command ou
 
 | | Count |
 |---|---|
-| **Passed** | X/30 |
-| **Not Tested** | Y/30 |
-| **Failed** | Z/30 |
+| **Passed** | X/31 |
+| **Not Tested** | Y/31 |
+| **Failed** | Z/31 |
 
 ## A. 1:1 Personal Chat
 
