@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-27
 **Branch:** `fix/msteams-streaming-tool-calls`
-**Commit:** `6828e56310` (fix(msteams): guard preparePayload against finalized stream re-suppression)
+**Commit:** `31af10ebda` (test(msteams): add edge case tests for multi-round and media payloads)
 **VM:** `riley-inbestments.westus2.cloudapp.azure.com`
 **Bot:** OpenClaw (INT) — App ID `0eab96ad-9fa4-4ef7-a953-29a4ef0f6737`
 **Model:** openai/gpt-4o
@@ -15,8 +15,8 @@
 
 | | Count |
 |---|---|
-| **Passed** | 4/4 |
-| **Failed** | 0/4 |
+| **Passed** | 5/5 |
+| **Failed** | 0/5 |
 
 ---
 
@@ -42,6 +42,13 @@
 - **Expected:** Both pre-tool and post-tool text delivered. No content silently lost.
 - **Actual:** TCP explanation delivered via stream, then "The fetch operation to `https://httpbin.org/get` was successful, returning a status of 200..." delivered via fallback as a separate message with AI label and feedback buttons.
 - **Screenshot:** ![A5 fetch result fallback](../screenshots/2026-03-27/A5-fetch-result-fallback.png)
+
+### Edge Case: 3+ Tool Call Rounds (text → tool → text → tool → text) — PASS
+
+- **Steps:** Sent "Write one paragraph about TCP, then fetch https://httpbin.org/get, then write one paragraph about UDP, then fetch https://httpbin.org/ip, then write one paragraph about ICMP."
+- **Expected:** All 5 text segments delivered (TCP, fetch result 1, UDP, fetch result 2, ICMP). No content lost across 3 rounds.
+- **Actual:** All segments delivered. TCP streamed, then UDP + fetch result delivered via fallback, then ICMP + IP fetch result delivered via fallback. Each message has AI label and feedback buttons.
+- **Screenshot:** ![3+ rounds edge case](../screenshots/2026-03-27/edge-case-3-rounds-icmp.png)
 
 ---
 
