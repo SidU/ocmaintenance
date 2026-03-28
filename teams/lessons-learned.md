@@ -32,6 +32,8 @@ Hard-won insights from bugs, reviews, and production incidents. Read this before
 
 - **Test all call orderings, not just one sequence.** The stream controller has multiple entry points (`onPartialReply`, `preparePayload`, `finalize`) that mutate shared state. When fixing state bugs, enumerate the possible call sequences — e.g., `preparePayload → preparePayload` is different from `preparePayload → onPartialReply → preparePayload`. The first fix for #56040 handled one sequence but missed the other, caught in code review.
 
+- **Test the contract, not just the bug.** When fixing a state machine bug, don't just reproduce the reported scenario and verify it passes. Ask: "what are all the possible inputs at each state?" Test the *full contract* of the changed function — all payload types (text-only, media-only, media+text), all cycle counts (1 round, 2 rounds, 3+ rounds), and all entry orderings. We kept testing the reproduction case instead of the contract of `preparePayload`, and a reviewer had to point out the missing edge cases (3+ segments, media+text after finalization).
+
 ---
 
 ## General Teams Streaming Protocol Gotchas
