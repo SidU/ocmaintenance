@@ -69,6 +69,25 @@ Before submitting any PR that touches `reply-stream-controller.ts`, `reply-dispa
 
 ---
 
+## Token Refresh Race Condition (401 Retry)
+
+**What happened:** MSAL caches tokens with a ~5 minute expiry buffer. A token can expire between when it's fetched from cache and when the API call completes — particularly during file uploads, streaming sessions, or proactive messaging after idle periods. The caller gets a 401 but has no way to force a fresh token.
+
+**Root cause:** The Teams SDK's `TokenManager` calls `acquireTokenByClientCredential({ scopes })` without passing MSAL's `skipCache` option. Callers who retry after a 401 get the same stale cached token.
+
+**SDK fix:** microsoft/teams.ts#493, PR microsoft/teams.ts#494 — adds `skipCache?: boolean` to `getBotToken()`, `getGraphToken()`, and `getAppGraphToken()`. Once shipped, wire through the OpenClaw extension: `token-retry.ts` → `attachments/types.ts` → `sdk.ts` → callers.
+
+**Meta-lesson: fix the root cause, not the symptom.** We spent significant time building retry-on-401 logic in the OpenClaw extension before discovering the retry was dead code — `getToken()` returns the same cached token on the second call. A 10-minute trace of the token lifecycle (`getAccessToken` → SDK → MSAL → cache) would have shown the fix belongs in the SDK. When a fix involves "retry the same call and hope for a different result," stop and ask: *what actually changes between the first call and the retry?* If nothing changes the input, the retry is theater. Trace the dependency chain to find where the real control lever is.
+
+**When implementing the extension-side wiring:**
+- Pass token providers (closures), not pre-resolved token strings — allows retry at any call site
+- Log when retrying (`log.debug("retrying with fresh token after 401")`)
+- Test with token expiry simulation (mock stale→fresh tokens, mock 401→200 responses)
+- Bot Framework tokens are `string | undefined`, Graph tokens are `string` — don't mix patterns
+- Run manual test A5 (streaming + tool use) before landing
+
+---
+
 ## Key Files Reference
 
 | File | Role |
