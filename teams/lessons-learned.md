@@ -88,6 +88,31 @@ Before submitting any PR that touches `reply-stream-controller.ts`, `reply-dispa
 
 ---
 
+## #60732: HttpPlugin Deprecation — Import Path Fragility
+
+**What happened:** PR #60939 replaced the deprecated `plugins: [noOpHttpPlugin]` pattern with the SDK's public `httpServerAdapter` option. Greptile's automated review caught that the replacement imported `IHttpServerAdapter` from a private dist path (`@microsoft/teams.apps/dist/http/index.js`), which reintroduces the same fragility the PR was removing.
+
+**What Greptile caught that we didn't:**
+
+1. **Private dist import.** The old code had a comment explicitly warning: *"FRAGILE: these are internal SDK paths."* We removed that code but then added a new import from a different private dist path. We were focused on the runtime behavior (eliminating the warning) and missed the structural concern (import path stability).
+
+2. **Stale JSDoc.** A comment at line 348 still referenced "the App's HttpPlugin" even though HttpPlugin was removed. When deleting code, search for references in comments and docs — not just code.
+
+**Why we missed it:**
+
+- **Tunnel vision on the runtime fix.** The goal was "eliminate the deprecation warning," and once logs showed zero warnings, we declared victory. We didn't step back and audit the PR holistically for the same class of problem (dist-path fragility) we were supposed to be fixing.
+- **Didn't grep for the old pattern.** After removing the old `dist/types/plugin/decorators/*.js` imports, we should have grepped for any remaining `dist/` imports in the changed file to verify we weren't reintroducing the same pattern.
+
+**How to avoid this class of bug:**
+
+- **After removing fragile code, grep for the same fragility pattern in your new code.** If you're removing private dist imports, search your diff for any new `dist/` paths.
+- **When deleting a function, search for its name in comments.** `grep -n "HttpPlugin" extensions/msteams/src/sdk.ts` would have caught the stale JSDoc immediately.
+- **Read the code comments you're deleting.** The old code's "FRAGILE" comment was a warning to future editors — including us. If you're removing warned-about code, ask: "am I reintroducing what this warning was about?"
+
+**Resolution:** `IHttpServerAdapter` is re-exported through the public barrel (`export * from './http'`) but `tsgo` (the stricter type-checker) can't resolve the chain, so the dist path is necessary. Added a comment explaining why. The stale JSDoc was updated.
+
+---
+
 ## Key Files Reference
 
 | File | Role |
