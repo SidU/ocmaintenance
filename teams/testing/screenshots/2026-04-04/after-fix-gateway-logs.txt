@@ -1,0 +1,6 @@
+Apr 04 17:42:47 riley-vm node[323419]: (node:323419) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+Apr 04 17:42:49 riley-vm node[323419]: 2026-04-04T17:42:49.809+00:00 [gateway] ready (6 plugins, 1.9s)
+Apr 04 17:42:53 riley-vm node[323419]: 2026-04-04T17:42:53.128+00:00 [msteams] starting provider (port 3979)
+Apr 04 17:42:54 riley-vm node[323419]: 2026-04-04T17:42:54.987+00:00 [plugins] acpx plugin-local binary ready (version 0.4.0)
+Apr 04 17:42:55 riley-vm node[323419]: 2026-04-04T17:42:55.071+00:00 [msteams] users resolved: 11f44b5b-bf76-4dd8-9976-f39d96594d92→11f44b5b-bf76-4dd8-9976-f39d96594d92, 8f0846cb-dd62-4dc6-8890-76079ee36563→8f0846cb-dd62-4dc6-8890-76079ee36563, cdde3360-3a32-410e-88a4-7c5d759cfb3d→cdde3360-3a32-410e-88a4-7c5d759cfb3d
+Apr 04 17:42:55 riley-vm node[323419]: 2026-04-04T17:42:55.265+00:00 [plugins] acpx runtime backend ready
